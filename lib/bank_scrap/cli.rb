@@ -94,7 +94,7 @@ module BankScrap
     def find_bank_class_for(bank_name)
       Object.const_get("BankScrap::#{bank_name}".classify) rescue Object.const_get("BankScrap::Banks::#{bank_name}::Bank".classify)
     rescue NameError
-      raise ArgumentError.new('Invalid bank name')
+      raise ArgumentError.new("Invalid bank name [#{bank_name}]")
     end
 
   end
