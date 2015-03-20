@@ -34,10 +34,28 @@ module BankScrap
     shared_options
     def transactions(bank)
       assign_shared_options
+
+      begin
+        start_date = @extra_args.has_key?('from') ? Date.strptime(@extra_args['from'], '%d-%m-%Y') : nil
+        end_date = @extra_args.has_key?('to') ? Date.strptime(@extra_args['to'], '%d-%m-%Y') : nil
+      rescue ArgumentError
+        say "Invalid date format. Correct format d-m-Y", :red
+      end
+
       initialize_client_for(bank)
 
-      account = @iban ? @client.account_with_iban(@iban) : @client.accounts.first
-      transactions = account.fetch_transactions(start_date: @from, end_date: @to)
+      account = iban ? @client.account_with_iban(iban) : @client.accounts.first
+
+      if !start_date.nil? && !end_date.nil?
+        if start_date > end_date
+          say "From date must be lower than to date", :red
+          exit
+        end
+
+        transactions = account.fetch_transactions(start_date: start_date, end_date: end_date)
+      else
+        transactions = account.transactions
+      end
 
       say "Transactions for: #{account.description} (#{account.iban})", :cyan
 
@@ -74,7 +92,7 @@ module BankScrap
     end
 
     def find_bank_class_for(bank_name)
-      Object.const_get("BankScrap::" + bank_name.classify)
+      Object.const_get("BankScrap::#{bank_name}".classify) rescue Object.const_get("BankScrap::Banks::#{bank_name}::Bank".classify)
     rescue NameError
       raise ArgumentError.new('Invalid bank name')
     end
