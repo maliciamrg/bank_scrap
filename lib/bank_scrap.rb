@@ -7,8 +7,7 @@ require 'bank_scrap/cli'
 require 'bank_scrap/bank'
 require 'bank_scrap/account'
 require 'bank_scrap/transaction'
-require 'bank_scrap/banks/openbank/openbank'
-require 'bank_scrap/banks/santander/santander'
+require 'bank_scrap/banks/banks'
 
 module BankScrap
   # autoload only requires the file when the specified
@@ -16,4 +15,6 @@ module BankScrap
   autoload :Bankinter,  'bank_scrap/banks/bankinter'
   autoload :Bbva,       'bank_scrap/banks/bbva'
   autoload :Ing,        'bank_scrap/banks/ing'
+  Banks.autoload :Openbank, 'bank_scrap/banks/openbank/openbank'
+  Banks.autoload :Santander, 'bank_scrap/banks/santander/santander'
 end
