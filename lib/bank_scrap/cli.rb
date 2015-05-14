@@ -13,9 +13,6 @@ module BankScrap
       # Usage:
       # bank_scrap balance BANK_NAME --extra=birthday:01/12/1980
       option :extra, type: :hash, default: {}
-      option :iban, type: :string, default: nil
-      option :from, type: :string, default: nil
-      option :to, type: :string, default: nil
     end
 
     desc "balance BANK", "get accounts' balance"
@@ -32,12 +29,12 @@ module BankScrap
 
     desc "transactions BANK", "get account's transactions"
     shared_options
-    def transactions(bank)
+    def transactions(bank, iban = nil)
       assign_shared_options
 
       begin
-        start_date = @extra_args.has_key?('from') ? Date.strptime(@extra_args['from'], '%d-%m-%Y') : nil
-        end_date = @extra_args.has_key?('to') ? Date.strptime(@extra_args['to'], '%d-%m-%Y') : nil
+        start_date = @extra_args.has_key?('from') ? Date.strptime(@extra_args['from'],'%d-%m-%Y') : nil
+        end_date = @extra_args.has_key?('to') ? Date.strptime(@extra_args['to'],'%d-%m-%Y') : nil
       rescue ArgumentError
         say "Invalid date format. Correct format d-m-Y", :red
       end
@@ -46,13 +43,13 @@ module BankScrap
 
       account = iban ? @client.account_with_iban(iban) : @client.accounts.first
 
-      if !start_date.nil? && !end_date.nil?
-        if start_date > end_date
+      if (!start_date.nil? && !end_date.nil?)
+        if (start_date > end_date)
           say "From date must be lower than to date", :red
           exit
         end
 
-        transactions = account.fetch_transactions(start_date: start_date, end_date: end_date)
+        transactions = account.fetch_transactions(start_date:start_date, end_date:end_date)
       else
         transactions = account.transactions
       end
@@ -72,18 +69,6 @@ module BankScrap
       @log        = options[:log]
       @debug      = options[:debug]
       @extra_args = options[:extra]
-      @iban       = options[:iban]
-      begin
-        @from = options[:from] ? Date.strptime(options[:from], '%d-%m-%Y') : Date.today - 1.month
-        @to = options[:to] ? Date.strptime(options[:to], '%d-%m-%Y') : Date.today
-        if @from > @to
-          say "From date must be lower than to date", :red
-          exit
-        end
-      rescue ArgumentError
-        say "Invalid date format. Correct format d-m-Y", :red
-        exit
-      end
     end
 
     def initialize_client_for(bank_name)
@@ -94,8 +79,7 @@ module BankScrap
     def find_bank_class_for(bank_name)
       Object.const_get("BankScrap::#{bank_name}".classify) rescue Object.const_get("BankScrap::Banks::#{bank_name}::Bank".classify)
     rescue NameError
-      raise ArgumentError.new("Invalid bank name [#{bank_name}]")
+      raise ArgumentError.new('Invalid bank name')
     end
-
   end
 end
