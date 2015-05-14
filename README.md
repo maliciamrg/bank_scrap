@@ -76,7 +76,7 @@ Replace 01/01/1980 with your actual birthday.
 
 ###### Openbank | Santander
 
-    $ bank_scrap transactions bbva --user YOUR_BANK_USER --password YOUR_BANK_PASSWORD
+    $ bank_scrap transactions your_bank --user YOUR_BANK_USER --password YOUR_BANK_PASSWORD
 
 #### Transactions with date range
 
