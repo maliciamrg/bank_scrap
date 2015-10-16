@@ -192,9 +192,9 @@ module BankScrap
       account
     end
 
-    # Build an BankScrap::Banks::Santander::Account object from API data
+    # Build an BankScrap::SantanderAccount object from API data
     def build_account(data)
-      Account.new(
+      SantanderAccount.new(
         bank: self,
         id: value_at_xpath(data, 'comunes/contratoID/NUMERO_DE_CONTRATO'),
         name: value_at_xpath(data, 'comunes/descContrato'),
