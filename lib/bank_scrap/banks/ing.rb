@@ -5,8 +5,8 @@ require 'tempfile'
 
 module BankScrap
   class Ing < Bank
-    BASE_ENDPOINT = 'https://ing.ingdirect.es/'
-    LOGIN_ENDPOINT     = BASE_ENDPOINT + 'genoma_login/rest/session'
+    BASE_ENDPOINT = 'https://m.ingdirect.fr/'
+    LOGIN_ENDPOINT     = BASE_ENDPOINT + '#/'
     POST_AUTH_ENDPOINT = BASE_ENDPOINT + 'genoma_api/login/auth/response'
     CLIENT_ENDPOINT    = BASE_ENDPOINT + 'genoma_api/rest/client'
     PRODUCTS_ENDPOINT  = BASE_ENDPOINT + 'genoma_api/rest/products'
