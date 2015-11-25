@@ -17,3 +17,9 @@ mkmf.log
 
 # MAC OS X files
 .DS_Store
+
+# ignore_for_eclipse
+/bin/
+.classpath
+.project
+
